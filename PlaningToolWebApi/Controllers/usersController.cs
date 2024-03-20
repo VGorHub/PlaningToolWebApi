@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PlaningToolWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class usersController : ControllerBase
+    public class UsersController : ControllerBase
     {
+        
         // GET: api/<usersController>
         [HttpGet]
         public IEnumerable<string> Get()
