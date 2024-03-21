@@ -25,7 +25,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./PlanningToolWebApi/
+          file: ../PlanningToolWebApi/Dockerfile
           push: true
           tags: vgorr/cb:latest
     - name: executing remote ssh commands using password
