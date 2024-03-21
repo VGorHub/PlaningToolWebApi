@@ -6,6 +6,7 @@ using System.Security.Principal;
 using PlaningToolWebApi.Context;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace PlaningToolWebApi.Controllers
 {
@@ -16,19 +17,19 @@ namespace PlaningToolWebApi.Controllers
 
     {
         private readonly DBContext dbContext;
-        ApplicationContext _context;
+        
         IWebHostEnvironment _appEnvironment;
 
-        public EventController(DBContext dbContext, ApplicationContext context, IWebHostEnvironment appEnvironment)
+        public EventController(DBContext dbContext, IWebHostEnvironment appEnvironment)
         {
             this.dbContext = dbContext;
-            _context = context;
+            
             _appEnvironment = appEnvironment;
         }
 
         // POST:= api/<EventController>/CreateEvent
         [HttpPost("CreateEvent")]
-        public ActionResult CreateEvent(int userId, int auditoryId, string startTime, string endTime, string name, string description, string type, string target, string date, IFormFileCollection? uploads)
+        public async Task<ActionResult> CreateEvent(int userId, int auditoryId, string startTime, string endTime, string name, string description, string type, string target, string date, IFormFileCollection? uploads)
         {
            
             DateTime startDateTime = DateTime.Parse(startTime);
@@ -61,23 +62,43 @@ namespace PlaningToolWebApi.Controllers
             newEvent.type = type;
             newEvent.target = target;
             newEvent.date = date;
-            dbContext.events.Add(newEvent);
-            dbContext.SaveChanges();
+
+            string cleanedStartTime = Regex.Replace(startTime ?? "", "[^0-9a-zA-Z]+", "-");
+            string cleanedDate = Regex.Replace(date ?? "", "[^0-9a-zA-Z]+", "_");
+
             foreach (var uploadedFile in uploads)
             {
                 // путь к папке Files
-                string path = "/Files/" + uploadedFile.FileName;
-                // сохраняем файл в папку Files в каталоге wwwroot
-                
-                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                string folderPath = Path.Combine(_appEnvironment.ContentRootPath, "Files", $"{name}_{cleanedStartTime}_{cleanedDate}");//_appEnvironment.webRootPath
+
+                // Создаем директорию, если она не существует
+                if (!Directory.Exists(folderPath))
                 {
-                    uploadedFile.CopyToAsync(fileStream);
+                    Directory.CreateDirectory(folderPath);
                 }
-                FileModel file = new FileModel { Name = uploadedFile.FileName, Path = path };
-                _context.Files.Add(file);
+
+                // путь к файлу
+                string filePath = Path.Combine(folderPath, uploadedFile.FileName);
+
+                // сохраняем файл в папку Files в каталоге wwwroot
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await uploadedFile.CopyToAsync(fileStream);
+                }
+
+                // Получаем текущий массив строк files из события
+                string[] currentFiles = newEvent.files ?? new string[0]; // Если files пустой, создаем пустой массив строк
+
+                // Создаем новый массив строк, включающий все текущие файлы и новый файл
+                string[] updatedFiles = currentFiles.Concat(new string[] { filePath }).ToArray();
+
+                // Обновляем свойство files у события
+                newEvent.files = updatedFiles;
             }
-            _context.SaveChanges();
-            return Ok();
+
+            dbContext.events.Add(newEvent);
+            dbContext.SaveChanges();
+            return Ok(_appEnvironment);
         }
 
 

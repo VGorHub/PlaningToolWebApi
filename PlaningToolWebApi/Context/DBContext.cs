@@ -12,7 +12,7 @@ namespace PlaningToolWebApi.Context
 
         public DbSet<Auditorie> auditories { get; set; }
 
-        public DbSet<Event> events { get; set; }
+        public DbSet<Event> events { get; set; }        
 
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
