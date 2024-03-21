@@ -21,6 +21,7 @@ namespace PlaningToolWebApi.Models
         public string type { get; set; }
         public string target {  get; set; }
         public string date { get; set; }
+        public string[] files { get; set; }
 
     }
 }
