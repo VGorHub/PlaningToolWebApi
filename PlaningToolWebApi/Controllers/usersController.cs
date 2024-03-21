@@ -47,19 +47,19 @@ namespace PlaningToolWebApi.Controllers
             else
             {
                 var checkUserInMembers = dbContext.members.Where(p => p.userid == userId && p.eventid == eventId).ToList();
-                if(!checkUserInMembers.Any())
+                if (!checkUserInMembers.Any())
                 {
                     Member newMember = new Member();
                     newMember.userid = userId;
                     newMember.eventid = eventId;
                     dbContext.members.Add(newMember);
                     dbContext.SaveChanges();
-                    return Ok(); 
-                    
+                    return Ok();
+
                 }
                 else
                 {
-                   return BadRequest();
+                    return BadRequest();
                 }
             }
         }
