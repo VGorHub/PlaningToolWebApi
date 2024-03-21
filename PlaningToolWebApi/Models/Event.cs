@@ -20,6 +20,7 @@ namespace PlaningToolWebApi.Models
         public string description { get; set; }
         public string type { get; set; }
         public string target {  get; set; }
+        public string date { get; set; }
 
     }
 }
