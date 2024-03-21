@@ -18,7 +18,7 @@ namespace PlaningToolWebApi.Controllers
             this.dbContext = dbContext;
         }
 
-        // GET api/Auditories/getAuditories
+        // GET:= api/<AuditoriesController>/getAuditories
         [HttpGet("getAuditories")]
         public ActionResult<IEnumerable<Auditorie>> GetAuditories()
         {
@@ -28,6 +28,26 @@ namespace PlaningToolWebApi.Controllers
                 return NotFound();
 
             return auditories;
+        }
+
+        // GET: api/<AuditoriesController>/getAuditoriesEvents/5
+        [HttpGet("getAuditoriesEvents/{auditoryId}")]
+        public ActionResult<IEnumerable<Event>> GetAuditoriesEvents(int auditoryId)
+        {
+            var events = dbContext.Events.Where(p => p.AuditoryId == auditoryId).ToList();
+
+            if (!events.Any())
+                return NotFound();
+
+            return events;
+        }
+
+
+        // GET api/<usersController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return "value";
         }
     }
 }
