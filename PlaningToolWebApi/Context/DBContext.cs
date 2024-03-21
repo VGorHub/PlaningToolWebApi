@@ -9,10 +9,7 @@ namespace PlaningToolWebApi.Context
         
         
         public DbSet<User> users { get; set; }
-
         public DbSet<Auditorie> auditories { get; set; }
-
-
         public DbSet<Event> events { get; set; }
         public DbSet<Member> members { get; set; }
 
