@@ -6,11 +6,17 @@ namespace PlaningToolWebApi.Context
 {
     public class DBContext : DbContext
     {
+        
+        
         public DbSet<User> Users { get; set; }
 
-        public DBContext()
+        public DbSet<Auditorie> Auditories { get; set; }
+
+        public DbSet<Event> Events { get; set; }
+
+        public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
-            Database.EnsureCreated();
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

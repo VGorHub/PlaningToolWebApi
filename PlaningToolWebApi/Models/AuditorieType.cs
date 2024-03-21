@@ -1,8 +1,8 @@
 ﻿namespace PlaningToolWebApi.Models
 {
-    public enum Role
+    public enum AuditorieType
     {
-        User,
-        Organizer
+        VR,
+        AR
     }
 }
