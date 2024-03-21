@@ -21,8 +21,8 @@ namespace PlaningToolWebApi.Controllers
         }
 
         // POST:= api/<EventController>/CreateEvent
-        [HttpPost("getAuditories")]
-        public ActionResult CreateEvent(int userId,int auditoryId,string startTime,string endTime,string name,string description,string type,string target)
+        [HttpPost("CreateEvent")]
+        public ActionResult CreateEvent(int userId,int auditoryId,string startTime,string endTime,string name,string description,string type,string target,string date)
         {
             Event newEvent = new Event();
             newEvent.userId = userId;
@@ -33,6 +33,7 @@ namespace PlaningToolWebApi.Controllers
             newEvent.description = description;
             newEvent.type = type;
             newEvent.target = target;
+            newEvent.date = date;
             dbContext.events.Add(newEvent);
             dbContext.SaveChanges();
             return Ok();
