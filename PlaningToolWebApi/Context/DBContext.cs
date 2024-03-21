@@ -8,7 +8,7 @@ namespace PlaningToolWebApi.Context
     {
         
         
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> users { get; set; }
 
         public DbSet<Auditorie> Auditories { get; set; }
 
@@ -21,7 +21,7 @@ namespace PlaningToolWebApi.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=92.63.178.148;Port=5432;Database=postgres;Username=postgres;Password=123qwe");
+            optionsBuilder.UseNpgsql("Host=92.63.178.148;Port=5432;Database=hackaton;Username=postgres;Password=123qwe");
         }
     }
 
