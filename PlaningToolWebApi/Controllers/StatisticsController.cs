@@ -17,43 +17,49 @@ namespace PlaningToolWebApi.Controllers
             this.dbContext = dbContext;
         }
 
-        [HttpGet("auditorie/people-count")]//возвращает количество людей, прошедших через каждую аудиторию.
+        [HttpGet("auditorie/people-count")]
         public IActionResult GetPeopleCountByAuditorie()
         {
-            var statistics = new Dictionary<string, int>();
-            var eventList = dbContext.events
-            .Select(e => new {
-                e.id,
-                e.userId,
-                e.auditoryId,
-                e.start_time,
-                e.end_time,
-                e.name,
-                e.description,
-                e.type,
-                e.target,
-                e.date
-            })
-            .ToList();
+            var peopleCountByAuditorie = new Dictionary<string, int>();
 
-            foreach (var evnt in eventList)
+            var membersList = dbContext.members.ToList();
+
+            foreach (var member in membersList)
             {
-                var auditoryName = dbContext.auditories.FirstOrDefault(a => a.id == evnt.auditoryId)?.name;
-                if (auditoryName != null)
+                var eventAuditoryId = dbContext.events.Select(e => new {
+                    e.id,
+                    e.userId,
+                    e.auditoryId,
+                    e.start_time,
+                    e.end_time,
+                    e.name,
+                    e.description,
+                    e.type,
+                    e.target,
+                    e.date
+                }).FirstOrDefault(e => e.id == member.eventid)?.auditoryId;
+
+                if (eventAuditoryId != null)
                 {
-                    if (!statistics.ContainsKey(auditoryName))
+                    var auditoryName = dbContext.auditories.FirstOrDefault(a => a.id == eventAuditoryId)?.name;
+
+                    if (auditoryName != null)
                     {
-                        statistics[auditoryName] = 1;
-                    }
-                    else
-                    {
-                        statistics[auditoryName]++;
+                        if (!peopleCountByAuditorie.ContainsKey(auditoryName))
+                        {
+                            peopleCountByAuditorie[auditoryName] = 1;
+                        }
+                        else
+                        {
+                            peopleCountByAuditorie[auditoryName]++;
+                        }
                     }
                 }
             }
 
-            return Ok(statistics);
+            return Ok(peopleCountByAuditorie);
         }
+
 
         [HttpGet("auditorie/occupancy")]//возвращает процент времени, в течение которого каждая аудитория была занята мероприятиями.
         public IActionResult GetAuditorieOccupancy()
