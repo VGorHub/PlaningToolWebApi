@@ -4,6 +4,8 @@ using PlaningToolWebApi.Models;
 using System.Net;
 using System.Security.Principal;
 using PlaningToolWebApi.Context;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace PlaningToolWebApi.Controllers
 {
@@ -14,15 +16,19 @@ namespace PlaningToolWebApi.Controllers
 
     {
         private readonly DBContext dbContext;
+        ApplicationContext _context;
+        IWebHostEnvironment _appEnvironment;
 
-        public EventController(DBContext dbContext)
+        public EventController(DBContext dbContext, ApplicationContext context, IWebHostEnvironment appEnvironment)
         {
             this.dbContext = dbContext;
+            _context = context;
+            _appEnvironment = appEnvironment;
         }
 
         // POST:= api/<EventController>/CreateEvent
         [HttpPost("CreateEvent")]
-        public ActionResult CreateEvent(int userId, int auditoryId, string startTime, string endTime, string name, string description, string type, string target, string date)
+        public ActionResult CreateEvent(int userId, int auditoryId, string startTime, string endTime, string name, string description, string type, string target, string date, IFormFileCollection? uploads)
         {
            
             DateTime startDateTime = DateTime.Parse(startTime);
@@ -57,7 +63,20 @@ namespace PlaningToolWebApi.Controllers
             newEvent.date = date;
             dbContext.events.Add(newEvent);
             dbContext.SaveChanges();
-
+            foreach (var uploadedFile in uploads)
+            {
+                // путь к папке Files
+                string path = "/Files/" + uploadedFile.FileName;
+                // сохраняем файл в папку Files в каталоге wwwroot
+                
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    uploadedFile.CopyToAsync(fileStream);
+                }
+                FileModel file = new FileModel { Name = uploadedFile.FileName, Path = path };
+                _context.Files.Add(file);
+            }
+            _context.SaveChanges();
             return Ok();
         }
 
