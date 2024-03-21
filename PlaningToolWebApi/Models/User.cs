@@ -1,13 +1,17 @@
 ﻿using PlaningToolWebApi.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace PlaningToolWebApi.Models
 {
+    [Table("users")]
     public class User
     {
-        public int Id { get; set; }
-
-        public string Email { get; set; }
-        public UserRole Role{ get; set;}
-        public string Password { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int id { get; set; }
+        public string login { get; set; }
+        public string role{ get; set;}
+        public string password { get; set; }
 
     }
 }
