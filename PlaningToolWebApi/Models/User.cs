@@ -6,6 +6,7 @@ namespace PlaningToolWebApi.Models
     [Table("users")]
     public class User
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
