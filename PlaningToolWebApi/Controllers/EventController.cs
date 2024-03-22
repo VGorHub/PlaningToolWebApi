@@ -30,7 +30,7 @@ namespace PlaningToolWebApi.Controllers
         {
 
             // Валидация startTime и endTime
-            Regex timeRegex = new Regex(@"^(1[0-6]|0[1-9]):[0-5][0-9]$");
+            Regex timeRegex = new Regex(@"^(1[0-7]):[0-5][0-9]$");
             if (!timeRegex.IsMatch(startTime) || !timeRegex.IsMatch(endTime))
             {
                 return BadRequest("Неправильный формат времени. Время должно быть от 10:00 до 17:00 в формате HH:mm.");
@@ -57,7 +57,7 @@ namespace PlaningToolWebApi.Controllers
 
                 if ((startDateTime >= existingStartDateTime && startDateTime < existingEndDateTime) ||
                     (endDateTime > existingStartDateTime && endDateTime <= existingEndDateTime) ||
-                    (startDateTime <= existingStartDateTime && endDateTime >= existingEndDateTime))
+                    (startDateTime <= existingStartDateTime && endDateTime >= existingEndDateTime)||(endDateTime<startDateTime))
                 {
                     return BadRequest("The audience is unavailable at the specified time.");
                 }
@@ -122,7 +122,7 @@ namespace PlaningToolWebApi.Controllers
 
             dbContext.events.Add(newEvent);
             dbContext.SaveChanges();
-            return Ok(_appEnvironment);
+            return Ok();
         }
 
 
