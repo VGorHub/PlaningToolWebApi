@@ -31,15 +31,16 @@ namespace PlaningToolWebApi.Controllers
 
         // GET: api/getAuditoriesEvents/auditoryId
         [HttpGet("getAuditoriesEvents/{auditoryId}")]
-        public ActionResult<IEnumerable<Event>> GetAuditoriesEvents(int auditoryId)
+        public ActionResult<IEnumerable<Event>> GetAuditoriesEvents(int auditoryId, string date)
         {
-            var events = dbContext.events.Where(p => p.auditoryId == auditoryId).ToList();
 
+            var events = dbContext.events.Where(p => p.auditoryId == auditoryId && p.date == date).ToList();
+             
             if (!events.Any())
                 return NotFound();
 
             return events;
         }
-        
+
     }
 }
