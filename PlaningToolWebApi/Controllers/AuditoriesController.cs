@@ -36,7 +36,7 @@ namespace PlaningToolWebApi.Controllers
         {
 
             var events = dbContext.events.Where(p => p.auditoryId == auditoryId && p.date == date).ToList();
-
+             
             if (!events.Any())
                 return NotFound();
 
