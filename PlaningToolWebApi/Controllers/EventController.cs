@@ -31,7 +31,21 @@ namespace PlaningToolWebApi.Controllers
         [HttpPost("CreateEvent")]
         public async Task<ActionResult> CreateEvent(int userId, int auditoryId, string startTime, string endTime, string name, string description, string type, string target, string date, IFormFileCollection? uploads)
         {
-           
+
+            // Валидация startTime и endTime
+            Regex timeRegex = new Regex(@"^(1[0-6]|0[1-9]):[0-5][0-9]$");
+            if (!timeRegex.IsMatch(startTime) || !timeRegex.IsMatch(endTime))
+            {
+                return BadRequest("Неправильный формат времени. Время должно быть от 10:00 до 17:00 в формате HH:mm.");
+            }
+
+            // Валидация date
+            Regex dateRegex = new Regex(@"^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$");
+            if (!dateRegex.IsMatch(date))
+            {
+                return BadRequest("Неправильный формат даты. Дата должна быть в формате DD.MM.YYYY.");
+            }
+
             DateTime startDateTime = DateTime.Parse(startTime);
             DateTime endDateTime = DateTime.Parse(endTime);
 
