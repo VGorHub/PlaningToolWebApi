@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using PlaningToolWebApi.Models;
-using System.Net;
-using System.Security.Principal;
 using PlaningToolWebApi.Context;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 using System.Text.RegularExpressions;
 
 namespace PlaningToolWebApi.Controllers

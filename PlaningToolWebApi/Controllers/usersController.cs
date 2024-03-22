@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PlaningToolWebApi.Context;
 using PlaningToolWebApi.Models;
-using System.Collections.Specialized;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PlaningToolWebApi.Controllers

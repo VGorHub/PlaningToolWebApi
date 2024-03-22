@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using PlaningToolWebApi.Models;
+
 using PlaningToolWebApi.Context;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace PlaningToolWebApi.Controllers
 {
