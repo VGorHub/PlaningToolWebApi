@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using PlaningToolWebApi.Models;
-using System.Net;
-using System.Security.Principal;
 using PlaningToolWebApi.Context;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 using System.Text.RegularExpressions;
 
 namespace PlaningToolWebApi.Controllers
@@ -77,37 +74,50 @@ namespace PlaningToolWebApi.Controllers
             newEvent.target = target;
             newEvent.date = date;
 
-            string cleanedStartTime = Regex.Replace(startTime ?? "", "[^0-9a-zA-Z]+", "-");
-            string cleanedDate = Regex.Replace(date ?? "", "[^0-9a-zA-Z]+", "_");
-
-            foreach (var uploadedFile in uploads)
+            if(!uploads.Any()) 
             {
-                // путь к папке Files
-                string folderPath = Path.Combine(_appEnvironment.ContentRootPath, "Files", $"{name}_{cleanedStartTime}_{cleanedDate}");//_appEnvironment.webRootPath
-
-                // Создаем директорию, если она не существует
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-
-                // путь к файлу
-                string filePath = Path.Combine(folderPath, uploadedFile.FileName);
-
-                // сохраняем файл в папку Files в каталоге wwwroot
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await uploadedFile.CopyToAsync(fileStream);
-                }
-
                 // Получаем текущий массив строк files из события
-                string[] currentFiles = newEvent.files ?? new string[0]; // Если files пустой, создаем пустой массив строк
+                string[] noFiles = newEvent.files ?? new string[0]; // Если files пустой, создаем пустой массив строк
 
                 // Создаем новый массив строк, включающий все текущие файлы и новый файл
-                string[] updatedFiles = currentFiles.Concat(new string[] { filePath }).ToArray();
+                string[] fileMessege = new string[] { "No Files" };
 
-                // Обновляем свойство files у события
-                newEvent.files = updatedFiles;
+                newEvent.files = fileMessege;
+            }
+            else 
+            {
+                string cleanedStartTime = Regex.Replace(startTime ?? "", "[^0-9a-zA-Z]+", "-");
+                string cleanedDate = Regex.Replace(date ?? "", "[^0-9a-zA-Z]+", "_");
+
+                foreach (var uploadedFile in uploads)
+                {
+                    // путь к папке Files
+                    string folderPath = Path.Combine(_appEnvironment.ContentRootPath, "Files", $"{name}_{cleanedStartTime}_{cleanedDate}");//_appEnvironment.webRootPath
+
+                    // Создаем директорию, если она не существует
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+
+                    // путь к файлу
+                    string filePath = Path.Combine(folderPath, uploadedFile.FileName);
+
+                    // сохраняем файл в папку Files в каталоге wwwroot
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await uploadedFile.CopyToAsync(fileStream);
+                    }
+
+                    // Получаем текущий массив строк files из события
+                    string[] currentFiles = newEvent.files ?? new string[0]; // Если files пустой, создаем пустой массив строк
+
+                    // Создаем новый массив строк, включающий все текущие файлы и новый файл
+                    string[] updatedFiles = currentFiles.Concat(new string[] { filePath }).ToArray();
+
+                    // Обновляем свойство files у события
+                    newEvent.files = updatedFiles;
+                }
             }
 
             dbContext.events.Add(newEvent);

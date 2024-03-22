@@ -1,5 +1,4 @@
 ﻿using PlaningToolWebApi.Models;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace PlaningToolWebApi.Context
